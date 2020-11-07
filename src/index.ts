@@ -10,89 +10,107 @@ const firstQuestion: QuestionCollection<ListQuestion> = {
   choices: ["Sim", "Não"],
 };
 
-const isMassQuestions: QuestionCollection<ListQuestion>[] = [
-  {
-    type: "list",
-    name: "defaultQuestion",
-    message: "O seu prato é lasanha?",
-    choices: ["Sim", "Não"],
-  },
-  {
-    type: "list",
-    name: "subsequent",
-    message: "O seu prato é macarrão?",
-    choices: ["Sim", "Não"],
-  },
-  {
-    type: "list",
-    name: "subsequent",
-    message: "O seu prato é arroz?",
-    choices: ["Sim", "Não"],
-  },
-];
+const defaultMassQuestion: QuestionCollection<ListQuestion> = {
+  type: "list",
+  name: "defaultQuestion",
+  message: "O seu prato é lasanha?",
+  choices: ["Sim", "Não"],
+};
 
-const isNotMassQuestions: QuestionCollection<ListQuestion>[] = [
-  {
-    type: "list",
-    name: "defaultQuestion",
-    message: "O seu prato é bolo de chocolate?",
-    choices: ["Sim", "Não"],
-  },
-  {
-    type: "list",
-    name: "subsequent",
-    message: "O seu prato é torta?",
-    choices: ["Sim", "Não"],
-  },
-  {
-    type: "list",
-    name: "subsequent",
-    message: "O seu prato é vinho?",
-    choices: ["Sim", "Não"],
-  },
-];
+const defultNotMassQuestion: QuestionCollection<ListQuestion> = {
+  type: "list",
+  name: "defaultQuestion",
+  message: "O seu prato é bolo de chocolate?",
+  choices: ["Sim", "Não"],
+};
+
+const isMassQuestions: QuestionCollection<ListQuestion>[][] = [];
+
+const isNotMassQuestions: QuestionCollection<ListQuestion>[][] = [];
 
 const promptQuestions = async (
-  questions: QuestionCollection<ListQuestion>[]
+  questions: QuestionCollection<ListQuestion>[][],
+  defaultQuestion: QuestionCollection<ListQuestion>,
+  defaultDish: string
 ) => {
-  for (const question of questions) {
-    const answer = await inquirer.prompt(question as ListQuestion);
-    if (answer["defaultQuestion"] && answer["defaultQuestion"] === "Sim") {
-      showRight();
-      return;
-    } else if (answer["subsequent"] && answer["subsequent"] === "Sim") {
-      showRight();
-      return;
+  if (questions.length > 0) {
+    for (const question of questions) {
+      const tip = await inquirer.prompt(question[0] as ListQuestion);
+
+      if (tip["subsequentTip"] && tip["subsequentTip"] === "Sim") {
+        const answer = await inquirer.prompt(question[1] as ListQuestion);
+
+        if (answer["subsequent"] && answer["subsequent"] === "Sim") {
+          showRight();
+          return;
+        }
+      }
     }
   }
+
+  const defaultAnswer = await inquirer.prompt(defaultQuestion as ListQuestion);
+  if (
+    defaultAnswer["defaultQuestion"] &&
+    defaultAnswer["defaultQuestion"] === "Sim"
+  ) {
+    showRight();
+    return;
+  }
+
   const newQuestion = await inquirer.prompt({
     type: "input",
     name: "newQuestion",
-    message: "Esse prato é _________ e lasanha não é",
+    message: "Qual prato você pensou?",
   });
 
   const dish = newQuestion["newQuestion"];
 
-  const newDish: QuestionCollection<ListQuestion> = {
-    type: "list",
-    name: "subsequent",
-    message: `O seu prato é ${dish}?`,
-    choices: ["Sim", "Não"],
-  };
+  const newQuestionTip = await inquirer.prompt({
+    type: "input",
+    name: "newQuestionTip",
+    message: `Esse prato é _________, mas ${defaultDish} não é: `,
+  });
+
+  const dishTip = newQuestionTip["newQuestionTip"];
+
+  const newDish: QuestionCollection<ListQuestion>[] = [
+    {
+      type: "list",
+      name: "subsequentTip",
+      message: `O seu prato é ${dishTip}, mas ${defaultDish} não é?`,
+      choices: ["Sim", "Não"],
+    },
+    {
+      type: "list",
+      name: "subsequent",
+      message: `O seu prato é ${dish}?`,
+      choices: ["Sim", "Não"],
+    },
+  ];
 
   questions.unshift(newDish);
 };
 
 const main = async () => {
+  await inquirer.prompt({
+    type: "list",
+    name: "start",
+    choices: ["Ok"],
+    message: "Pense em um prato que você gosta!",
+  });
   while (true) {
     const firstAnswer = await inquirer.prompt(firstQuestion);
 
     if (firstAnswer["firstQuestion"] === "Sim") {
-      await promptQuestions(isMassQuestions);
+      await promptQuestions(isMassQuestions, defaultMassQuestion, "Lasanha");
       continue;
     }
 
-    await promptQuestions(isNotMassQuestions);
+    await promptQuestions(
+      isNotMassQuestions,
+      defultNotMassQuestion,
+      "Bolo de chocolate"
+    );
   }
 };
 
