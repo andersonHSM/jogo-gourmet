@@ -1,7 +1,4 @@
-import { Subject } from "rxjs";
-
 import inquirer, { QuestionCollection, ListQuestion } from "inquirer";
-var prompts = new Subject();
 
 const firstQuestion: QuestionCollection<ListQuestion> = {
   type: "list",
@@ -57,6 +54,12 @@ const promptQuestions = async (
     return;
   }
 
+  const newDish = await insertNewDish(defaultDish);
+
+  questions.unshift(newDish);
+};
+
+const insertNewDish = async (defaultDish: string) => {
   const newQuestion = await inquirer.prompt({
     type: "input",
     name: "newQuestion",
@@ -88,7 +91,11 @@ const promptQuestions = async (
     },
   ];
 
-  questions.unshift(newDish);
+  return newDish;
+};
+
+const showRight = () => {
+  console.log("Acertei novamente");
 };
 
 const main = async () => {
@@ -112,10 +119,6 @@ const main = async () => {
       "Bolo de chocolate"
     );
   }
-};
-
-const showRight = () => {
-  console.log("Acertei novamente");
 };
 
 main();
