@@ -1,14 +1,15 @@
 import { Subject } from "rxjs";
 
-const inquirer = require("inquirer");
+import inquirer, { QuestionCollection, ListQuestion } from "inquirer";
 var prompts = new Subject();
 
-const firstQuestion = {
+const firstQuestion: QuestionCollection<ListQuestion> = {
   type: "list",
-  name: "fisrtQuestion",
+  name: "firstQuestion",
   message: "O seu prato é massa?",
   choices: ["Sim", "Não"],
 };
+
 const isMassQuestions = [
   {
     type: "list",
@@ -18,42 +19,30 @@ const isMassQuestions = [
   },
 ];
 
-inquirer
-  .prompt(firstQuestion)
-  .then((answer) => {
-    if (answer.fisrtQuestion === "Sim") {
-      console.log("oi");
-      massQuestions();
-    }
+const massQuestions = async () => {
+  const isMassAnswers = await inquirer.prompt(isMassQuestions);
 
-    nonMassQuestions();
-  })
-  .catch((error) => {
-    if (error.isTtyError) {
-      // Prompt couldn't be rendered in the current environment
-    } else {
-      // Something else when wrong
-    }
-  });
-
-const massQuestions = () => {
-  return inquirer.prompt(isMassQuestions).then((answers) => {
-    console.log(answers);
-  });
+  if (isMassAnswers["isLasanha"] === "Sim") {
+    showRight();
+  }
 };
 
-const nonMassQuestions = () => {};
+const main = async () => {
+  let counter = 0;
 
-// const inquirer = require("inquirer");
+  while (true) {
+    const firstAnswer = await inquirer.prompt(firstQuestion);
 
-// var questions = [
-//   {
-//     type: "input",
-//     name: "name",
-//     message: "What's your name?",
-//   },
-// ];
+    if (firstAnswer["firstQuestion"] === "Sim") {
+      await massQuestions();
+    }
 
-// inquirer.prompt(questions).then((answers) => {
-//   console.log(`Hi ${answers["name"]}!`);
-// });
+    counter += 1;
+  }
+};
+
+const showRight = () => {
+  console.log("Acertei novamente");
+};
+
+main();
