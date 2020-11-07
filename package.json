@@ -1,0 +1,19 @@
+{
+  "name": "jogo-gourmet",
+  "version": "1.0.0",
+  "description": "Teste técnico",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "play": "tsc && node dist/index.js"
+  },
+  "author": "Anderson Menezes",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/inquirer": "^7.3.1",
+    "typescript": "^4.0.5"
+  },
+  "dependencies": {
+    "inquirer": "^7.3.3"
+  }
+}
