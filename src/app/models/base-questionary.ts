@@ -14,7 +14,7 @@ export class BaseQuestionary {
           const answer = await inquirer.prompt(question[1] as ListQuestion);
 
           if (answer["subsequent"] && answer["subsequent"] === "Sim") {
-            this.showRight();
+            await this.showRight();
             return;
           }
         }
@@ -28,17 +28,23 @@ export class BaseQuestionary {
       defaultAnswer["defaultQuestion"] &&
       defaultAnswer["defaultQuestion"] === "Sim"
     ) {
-      this.showRight();
+      await this.showRight();
       return;
     }
 
     const newDish = await this.insertNewDish(defaultDish);
 
     questions.unshift(newDish);
+    return;
   };
 
-  showRight = () => {
-    console.log("Acertei novamente");
+  showRight = async () => {
+    await inquirer.prompt({
+      type: "list",
+      name: "start",
+      choices: ["Ok"],
+      message: "Acertei de novo!",
+    });
   };
 
   insertNewDish = async (defaultDish: string) => {
@@ -53,7 +59,7 @@ export class BaseQuestionary {
     const newQuestionTip = await inquirer.prompt({
       type: "input",
       name: "newQuestionTip",
-      message: `Esse prato é _________, mas ${defaultDish} não é: `,
+      message: `${dish} é _________, mas ${defaultDish} não.`,
     });
 
     const dishTip = newQuestionTip["newQuestionTip"];
@@ -62,13 +68,13 @@ export class BaseQuestionary {
       {
         type: "list",
         name: "subsequentTip",
-        message: `O seu prato é ${dishTip}, mas ${defaultDish} não é?`,
+        message: `O prato que você pensou é ${dishTip}?`,
         choices: ["Sim", "Não"],
       },
       {
         type: "list",
         name: "subsequent",
-        message: `O seu prato é ${dish}?`,
+        message: `O prato que você pensou é ${dish}?`,
         choices: ["Sim", "Não"],
       },
     ];
