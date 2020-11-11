@@ -4,21 +4,21 @@ import { promptQuestions } from "./promp-questions";
 const firstQuestion: QuestionCollection<ListQuestion> = {
   type: "list",
   name: "firstQuestion",
-  message: "O seu prato é massa?",
+  message: "O prato que você pensou é massa?",
   choices: ["Sim", "Não"],
 };
 
 const defaultMassQuestion: QuestionCollection<ListQuestion> = {
   type: "list",
   name: "defaultQuestion",
-  message: "O seu prato é lasanha?",
+  message: "O prato que você pensou é Lasanha?",
   choices: ["Sim", "Não"],
 };
 
 const defultNotMassQuestion: QuestionCollection<ListQuestion> = {
   type: "list",
   name: "defaultQuestion",
-  message: "O seu prato é bolo de chocolate?",
+  message: "O prato que você pensou é Bolo de Chocolate?",
   choices: ["Sim", "Não"],
 };
 
@@ -27,14 +27,14 @@ const isMassQuestions: QuestionCollection<ListQuestion>[][] = [];
 const isNotMassQuestions: QuestionCollection<ListQuestion>[][] = [];
 
 export const main = async () => {
-  await inquirer.prompt({
-    type: "list",
-    name: "start",
-    choices: ["Ok"],
-    message: "Pense em um prato que você gosta!",
-  });
-
   while (true) {
+    await inquirer.prompt({
+      type: "list",
+      name: "start",
+      choices: ["Ok"],
+      message: "Pense em um prato que gosta",
+    });
+
     const firstAnswer = await inquirer.prompt(firstQuestion);
 
     if (firstAnswer["firstQuestion"] === "Sim") {

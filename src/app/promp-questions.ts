@@ -15,7 +15,7 @@ export const promptQuestions = async (
         const answer = await inquirer.prompt(question[1] as ListQuestion);
 
         if (answer["subsequent"] && answer["subsequent"] === "Sim") {
-          showRight();
+          await showRight();
           return;
         }
       }
@@ -27,7 +27,7 @@ export const promptQuestions = async (
     defaultAnswer["defaultQuestion"] &&
     defaultAnswer["defaultQuestion"] === "Sim"
   ) {
-    showRight();
+    await showRight();
     return;
   }
 

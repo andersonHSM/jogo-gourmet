@@ -12,7 +12,7 @@ export const insertNewDish = async (defaultDish: string) => {
   const newQuestionTip = await inquirer.prompt({
     type: "input",
     name: "newQuestionTip",
-    message: `Esse prato é _________, mas ${defaultDish} não é: `,
+    message: `Esse prato é _________, mas ${defaultDish} não.`,
   });
 
   const dishTip = newQuestionTip["newQuestionTip"];
@@ -21,13 +21,13 @@ export const insertNewDish = async (defaultDish: string) => {
     {
       type: "list",
       name: "subsequentTip",
-      message: `O seu prato é ${dishTip}, mas ${defaultDish} não é?`,
+      message: `O prato que você pensou é ${dishTip}?`,
       choices: ["Sim", "Não"],
     },
     {
       type: "list",
       name: "subsequent",
-      message: `O seu prato é ${dish}?`,
+      message: `O prato que você pensou é ${dish}?`,
       choices: ["Sim", "Não"],
     },
   ];
